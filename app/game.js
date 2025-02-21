@@ -19,10 +19,6 @@ backgroundImage.onload = function () {
 
 const startButton = document.createElement('button');
 startButton.innerText = 'Press Enter to Start';
-startButton.style.position = 'absolute';
-startButton.style.top = '50%';
-startButton.style.left = '50%';
-startButton.style.transform = 'translate(-50%, -50%)';
 document.body.appendChild(startButton);
 
 const pauseScreen = document.createElement('div');
