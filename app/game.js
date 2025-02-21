@@ -32,6 +32,22 @@ pauseScreen.style.fontSize = '30px';
 pauseScreen.style.display = 'none';
 document.body.appendChild(pauseScreen);
 
+const endGameScreen = document.createElement('div');
+endGameScreen.innerText = 'Game Over! Click to Restart';
+endGameScreen.style.position = 'absolute';
+endGameScreen.style.top = '50%';
+endGameScreen.style.left = '50%';
+endGameScreen.style.transform = 'translate(-50%, -50%)';
+endGameScreen.style.color = 'white';
+endGameScreen.style.fontSize = '30px';
+endGameScreen.style.display = 'none';
+endGameScreen.style.cursor = 'pointer';
+document.body.appendChild(endGameScreen);
+
+endGameScreen.addEventListener('click', () => {
+    document.location.reload();
+});
+
 const keys = {
     left: false,
     right: false
@@ -141,8 +157,7 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
         backgroundMusic.pause();
-        alert('Game Over!');
-        document.location.reload();
+        endGameScreen.style.display = 'block'; // Show the end game screen
     }
 }
 
