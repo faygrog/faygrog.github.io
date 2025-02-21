@@ -1,80 +1,100 @@
-window.onload = function () {
-    const canvas = document.getElementById('gameCanvas');
-    const context = canvas.getContext('2d');
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
 
-    const bird = {
-        x: 50,
-        y: 150,
-        width: 20,
-        height: 20,
-        gravity: 0.6,
-        lift: -15,
-        velocity: 0,
-        draw() {
-            context.fillStyle = 'yellow';
-            context.fillRect(this.x, this.y, this.width, this.height);
-        },
-        update() {
-            this.velocity += this.gravity;
-            this.y += this.velocity;
-            if (this.y + this.height > canvas.height) {
-                this.y = canvas.height - this.height;
-                this.velocity = 0;
-            }
-            if (this.y < 0) {
-                this.y = 0;
-                this.velocity = 0;
-            }
-        },
-        flap() {
-            this.velocity = this.lift;
-        }
-    };
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+canvas.style.backgroundColor = 'black'; // Add this line to set a background color
 
-    let pipes = [];
-    const pipeWidth = 30;
-    const pipeGap = 100;
-    let frameCount = 0;
+const backgroundMusic = new Audio('gardens-stylish-chill-303261.mp3'); // Update the path to the new mp3 file
+backgroundMusic.loop = true;
 
-    function drawPipes() {
-        context.fillStyle = 'green';
-        pipes.forEach(pipe => {
-            context.fillRect(pipe.x, 0, pipeWidth, pipe.top);
-            context.fillRect(pipe.x, canvas.height - pipe.bottom, pipeWidth, pipe.bottom);
-        });
+const startButton = document.createElement('button');
+startButton.innerText = 'Start Game';
+startButton.style.position = 'absolute';
+startButton.style.top = '50%';
+startButton.style.left = '50%';
+startButton.style.transform = 'translate(-50%, -50%)';
+document.body.appendChild(startButton);
+
+startButton.addEventListener('click', () => {
+    backgroundMusic.play();
+    update(); // Start the game loop
+    startButton.style.display = 'none'; // Hide the start button
+});
+
+class Player {
+    constructor() {
+        this.width = 50;
+        this.height = 50;
+        this.x = canvas.width / 2 - this.width / 2;
+        this.y = canvas.height - this.height - 10;
+        this.speed = 5;
+        this.dx = 0;
     }
 
-    function updatePipes() {
-        if (frameCount % 90 === 0) {
-            const top = Math.random() * (canvas.height - pipeGap);
-            const bottom = canvas.height - top - pipeGap;
-            pipes.push({ x: canvas.width, top, bottom });
-        }
-        pipes.forEach(pipe => {
-            pipe.x -= 2;
-        });
-        pipes = pipes.filter(pipe => pipe.x + pipeWidth > 0);
+    draw() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
-    function gameLoop() {
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        bird.update();
-        bird.draw();
-        updatePipes();
-        drawPipes();
-        frameCount++;
-        requestAnimationFrame(gameLoop);
+    update() {
+        this.x += this.dx;
+
+        // Wall detection
+        if (this.x < 0) {
+            this.x = 0;
+        }
+
+        if (this.x + this.width > canvas.width) {
+            this.x = canvas.width - this.width;
+        }
+
+        this.draw();
     }
 
-    canvas.addEventListener('click', () => {
-        bird.flap();
-    });
+    moveLeft() {
+        this.dx = -this.speed;
+    }
 
-    document.addEventListener('keydown', function (event) {
-        if (event.code === 'Space') {
-            bird.flap();
-        }
-    });
+    moveRight() {
+        this.dx = this.speed;
+    }
 
-    gameLoop();
-};
+    stop() {
+        this.dx = 0;
+    }
+}
+
+const player = new Player();
+
+function clear() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function update() {
+    clear();
+    player.update();
+    requestAnimationFrame(update);
+}
+
+function keyDown(e) {
+    if (e.key === 'ArrowRight' || e.key === 'Right') {
+        player.moveRight();
+    } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
+        player.moveLeft();
+    }
+}
+
+function keyUp(e) {
+    if (
+        e.key === 'ArrowRight' ||
+        e.key === 'Right' ||
+        e.key === 'ArrowLeft' ||
+        e.key === 'Left'
+    ) {
+        player.stop();
+    }
+}
+
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
