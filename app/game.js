@@ -70,7 +70,28 @@ class Player {
     }
 }
 
+class Enemy {
+    constructor() {
+        this.width = 50;
+        this.height = 50;
+        this.x = Math.random() * (canvas.width - this.width);
+        this.y = 0;
+        this.speed = 2;
+    }
+
+    draw() {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+
+    update() {
+        this.y += this.speed;
+        this.draw();
+    }
+}
+
 const player = new Player();
+const enemies = [];
 
 function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -80,6 +101,7 @@ function update() {
     clear();
     handleInput();
     player.update();
+    enemies.forEach(enemy => enemy.update());
     requestAnimationFrame(update);
 }
 
@@ -92,6 +114,13 @@ function handleInput() {
         player.stop();
     }
 }
+
+function spawnEnemy() {
+    const enemy = new Enemy();
+    enemies.push(enemy);
+}
+
+setInterval(spawnEnemy, 2000); // Spawn an enemy every 2 seconds
 
 function keyDown(e) {
     if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
