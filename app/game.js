@@ -3,9 +3,9 @@ const ctx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-canvas.style.backgroundColor = 'black'; // Add this line to set a background color
+canvas.style.backgroundColor = 'black';
 
-const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3'); // Update the path to the new mp3 file
+const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3');
 backgroundMusic.loop = true;
 
 const backgroundImage = new Image();
@@ -13,7 +13,7 @@ backgroundImage.src = 'assets/images/rainbow frog background for 2D web shooting
 
 backgroundImage.onload = function () {
     const imageX = (canvas.width - backgroundImage.width) / 2;
-    const imageY = (canvas.height - backgroundImage.height) / 2 - 50; // Adjust the Y position to be above the start button
+    const imageY = (canvas.height - backgroundImage.height) / 2 - 50;
     ctx.drawImage(backgroundImage, imageX, imageY);
 };
 
@@ -22,26 +22,13 @@ startButton.innerText = 'Press Enter to Start';
 document.body.appendChild(startButton);
 
 const pauseScreen = document.createElement('div');
+pauseScreen.className = 'pause-screen';
 pauseScreen.innerText = 'Paused';
-pauseScreen.style.position = 'absolute';
-pauseScreen.style.top = '50%';
-pauseScreen.style.left = '50%';
-pauseScreen.style.transform = 'translate(-50%, -50%)';
-pauseScreen.style.color = 'white';
-pauseScreen.style.fontSize = '30px';
-pauseScreen.style.display = 'none';
 document.body.appendChild(pauseScreen);
 
 const endGameScreen = document.createElement('div');
+endGameScreen.className = 'end-game-screen';
 endGameScreen.innerText = 'Game Over! Click to Restart';
-endGameScreen.style.position = 'absolute';
-endGameScreen.style.top = '50%';
-endGameScreen.style.left = '50%';
-endGameScreen.style.transform = 'translate(-50%, -50%)';
-endGameScreen.style.color = 'white';
-endGameScreen.style.fontSize = '30px';
-endGameScreen.style.display = 'none';
-endGameScreen.style.cursor = 'pointer';
 document.body.appendChild(endGameScreen);
 
 endGameScreen.addEventListener('click', () => {
@@ -53,24 +40,7 @@ const keys = {
     right: false
 };
 
-let gameStarted = false; // Add this line to track if the game has started
-
-function startGame() {
-    gameStarted = true; // Set gameStarted to true when the game starts
-    backgroundMusic.play();
-    update(); // Start the game loop
-    startButton.style.display = 'none'; // Hide the start button
-    clear(); // Clear the canvas to remove the background image
-}
-
-startButton.addEventListener('click', startGame);
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        startGame();
-    }
-});
-
+let gameStarted = false;
 let gameOver = false;
 let gamePaused = false;
 
@@ -91,17 +61,17 @@ class Player {
 
     update() {
         this.x += this.dx;
+        this.checkBounds();
+        this.draw();
+    }
 
-        // Wall detection
+    checkBounds() {
         if (this.x < 0) {
             this.x = 0;
         }
-
         if (this.x + this.width > canvas.width) {
             this.x = canvas.width - this.width;
         }
-
-        this.draw();
     }
 
     moveLeft() {
@@ -157,31 +127,29 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
         backgroundMusic.pause();
-        endGameScreen.style.display = 'block'; // Show the end game screen
+        endGameScreen.style.display = 'block';
     }
 }
 
 function togglePause() {
+    gamePaused = !gamePaused;
     if (gamePaused) {
-        gamePaused = false;
+        backgroundMusic.pause();
+        pauseScreen.style.display = 'block';
+    } else {
         backgroundMusic.play();
         pauseScreen.style.display = 'none';
         update();
-    } else {
-        gamePaused = true;
-        backgroundMusic.pause();
-        pauseScreen.style.display = 'block';
     }
 }
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        togglePause();
-    }
-    if (e.key === 'Enter') {
-        startGame();
-    }
-});
+function startGame() {
+    gameStarted = true;
+    backgroundMusic.play();
+    update();
+    startButton.style.display = 'none';
+    clear();
+}
 
 function update() {
     if (!gameOver && !gamePaused) {
@@ -209,13 +177,11 @@ function handleInput() {
 }
 
 function spawnEnemy() {
-    if (gameStarted && !gamePaused) { // Check if the game has started before spawning enemies
+    if (gameStarted && !gamePaused) {
         const enemy = new Enemy();
         enemies.push(enemy);
     }
 }
-
-setInterval(spawnEnemy, 2000); // Spawn an enemy every 2 seconds
 
 function keyDown(e) {
     if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
@@ -233,5 +199,15 @@ function keyUp(e) {
     }
 }
 
+startButton.addEventListener('click', startGame);
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        startGame();
+    }
+    if (e.key === 'Escape') {
+        togglePause();
+    }
+});
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+setInterval(spawnEnemy, 2000);
