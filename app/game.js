@@ -56,7 +56,7 @@ class Player {
         this.speed = 5;
         this.dx = 0;
         this.image = new Image();
-        this.image.src = 'assets/images/for_loyal_human.png'; // Set the player image source
+        this.image.src = 'assets/images/for_loyal_guest.png'; // Update the player image source
     }
 
     draw() {
@@ -161,6 +161,7 @@ function endGame() {
 }
 
 function togglePause() {
+    if (gameOver) return; // Prevent pausing or resuming if the game is over
     gamePaused = !gamePaused;
     if (gamePaused) {
         backgroundMusic.pause();
@@ -177,13 +178,6 @@ function autoPause() {
         togglePause();
     }
 }
-
-// Remove the autoResume function and its event listener
-// function autoResume() {
-//     if (gamePaused && gameStarted) {
-//         togglePause();
-//     }
-// }
 
 function startGame() {
     gameStarted = true;
