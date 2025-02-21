@@ -172,6 +172,19 @@ function togglePause() {
     }
 }
 
+function autoPause() {
+    if (!gamePaused && gameStarted) {
+        togglePause();
+    }
+}
+
+// Remove the autoResume function and its event listener
+// function autoResume() {
+//     if (gamePaused && gameStarted) {
+//         togglePause();
+//     }
+// }
+
 function startGame() {
     gameStarted = true;
     backgroundMusic.play();
@@ -240,4 +253,5 @@ document.addEventListener('keydown', (e) => {
 });
 document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
+window.addEventListener('blur', autoPause);
 setInterval(spawnEnemy, 2000);
