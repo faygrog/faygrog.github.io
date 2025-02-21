@@ -8,6 +8,15 @@ canvas.style.backgroundColor = 'black'; // Add this line to set a background col
 const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3'); // Update the path to the new mp3 file
 backgroundMusic.loop = true;
 
+const backgroundImage = new Image();
+backgroundImage.src = 'assets/images/rainbow frog background for 2D web shooting game.png';
+
+backgroundImage.onload = function () {
+    const imageX = (canvas.width - backgroundImage.width) / 2;
+    const imageY = (canvas.height - backgroundImage.height) / 2 - 50; // Adjust the Y position to be above the start button
+    ctx.drawImage(backgroundImage, imageX, imageY);
+};
+
 const startButton = document.createElement('button');
 startButton.innerText = 'Press Enter to Start';
 startButton.style.position = 'absolute';
@@ -32,10 +41,14 @@ const keys = {
     right: false
 };
 
+let gameStarted = false; // Add this line to track if the game has started
+
 function startGame() {
+    gameStarted = true; // Set gameStarted to true when the game starts
     backgroundMusic.play();
     update(); // Start the game loop
     startButton.style.display = 'none'; // Hide the start button
+    clear(); // Clear the canvas to remove the background image
 }
 
 startButton.addEventListener('click', startGame);
@@ -185,7 +198,7 @@ function handleInput() {
 }
 
 function spawnEnemy() {
-    if (!gamePaused) {
+    if (gameStarted && !gamePaused) { // Check if the game has started before spawning enemies
         const enemy = new Enemy();
         enemies.push(enemy);
     }
