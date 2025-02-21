@@ -5,7 +5,7 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.style.backgroundColor = 'black'; // Add this line to set a background color
 
-const backgroundMusic = new Audio('gardens-stylish-chill-303261.mp3'); // Update the path to the new mp3 file
+const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3'); // Update the path to the new mp3 file
 backgroundMusic.loop = true;
 
 const startButton = document.createElement('button');
