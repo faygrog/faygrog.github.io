@@ -94,17 +94,17 @@ function handleInput() {
 }
 
 function keyDown(e) {
-    if (e.key === 'ArrowRight' || e.key === 'Right') {
+    if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
         keys.right = true;
-    } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
+    } else if (e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a' || e.key === 'A') {
         keys.left = true;
     }
 }
 
 function keyUp(e) {
-    if (e.key === 'ArrowRight' || e.key === 'Right') {
+    if (e.key === 'ArrowRight' || e.key === 'Right' || e.key === 'd' || e.key === 'D') {
         keys.right = false;
-    } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
+    } else if (e.key === 'ArrowLeft' || e.key === 'Left' || e.key === 'a' || e.key === 'A') {
         keys.left = false;
     }
 }
