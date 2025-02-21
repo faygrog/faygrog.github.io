@@ -9,25 +9,45 @@ const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp
 backgroundMusic.loop = true;
 
 const startButton = document.createElement('button');
-startButton.innerText = 'Start FayGrog';
+startButton.innerText = 'Press Enter to Start';
 startButton.style.position = 'absolute';
 startButton.style.top = '50%';
 startButton.style.left = '50%';
 startButton.style.transform = 'translate(-50%, -50%)';
 document.body.appendChild(startButton);
 
+const pauseScreen = document.createElement('div');
+pauseScreen.innerText = 'Paused';
+pauseScreen.style.position = 'absolute';
+pauseScreen.style.top = '50%';
+pauseScreen.style.left = '50%';
+pauseScreen.style.transform = 'translate(-50%, -50%)';
+pauseScreen.style.color = 'white';
+pauseScreen.style.fontSize = '30px';
+pauseScreen.style.display = 'none';
+document.body.appendChild(pauseScreen);
+
 const keys = {
     left: false,
     right: false
 };
 
-startButton.addEventListener('click', () => {
+function startGame() {
     backgroundMusic.play();
     update(); // Start the game loop
     startButton.style.display = 'none'; // Hide the start button
+}
+
+startButton.addEventListener('click', startGame);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        startGame();
+    }
 });
 
 let gameOver = false;
+let gamePaused = false;
 
 class Player {
     constructor() {
@@ -117,8 +137,30 @@ function endGame() {
     }
 }
 
+function togglePause() {
+    if (gamePaused) {
+        gamePaused = false;
+        backgroundMusic.play();
+        pauseScreen.style.display = 'none';
+        update();
+    } else {
+        gamePaused = true;
+        backgroundMusic.pause();
+        pauseScreen.style.display = 'block';
+    }
+}
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        togglePause();
+    }
+    if (e.key === 'Enter') {
+        startGame();
+    }
+});
+
 function update() {
-    if (!gameOver) {
+    if (!gameOver && !gamePaused) {
         clear();
         handleInput();
         player.update();
