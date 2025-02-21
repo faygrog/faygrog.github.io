@@ -9,7 +9,7 @@ const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp
 backgroundMusic.loop = true;
 
 const startButton = document.createElement('button');
-startButton.innerText = 'Start Game';
+startButton.innerText = 'Start FayGrog';
 startButton.style.position = 'absolute';
 startButton.style.top = '50%';
 startButton.style.left = '50%';
