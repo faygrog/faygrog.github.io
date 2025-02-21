@@ -8,13 +8,16 @@ canvas.style.backgroundColor = 'black';
 const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3');
 backgroundMusic.loop = true;
 
-const backgroundImage = new Image();
-backgroundImage.src = 'assets/images/rainbow frog background for 2D web shooting game.png';
+const welcomeBackgroundImage = new Image();
+welcomeBackgroundImage.src = 'assets/images/rainbow frog background for 2D web shooting game.png';
 
-backgroundImage.onload = function () {
-    const imageX = (canvas.width - backgroundImage.width) / 2;
-    const imageY = (canvas.height - backgroundImage.height) / 2 - 50;
-    ctx.drawImage(backgroundImage, imageX, imageY);
+const gameBackgroundImage = new Image();
+gameBackgroundImage.src = 'assets/images/summer_background_47_a.jpg';
+
+welcomeBackgroundImage.onload = function () {
+    const imageX = (canvas.width - welcomeBackgroundImage.width) / 2;
+    const imageY = (canvas.height - welcomeBackgroundImage.height) / 2 - 50;
+    ctx.drawImage(welcomeBackgroundImage, imageX, imageY);
 };
 
 const startButton = document.createElement('button');
@@ -115,6 +118,31 @@ function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+let backgroundY = 0; // Add a variable to track the background's vertical position
+
+function drawBackground(image) {
+    const offScreenCanvas = document.createElement('canvas');
+    const offScreenCtx = offScreenCanvas.getContext('2d');
+    const scale = 0.08; // Adjust the scale to zoom out the background by an additional 5x (1/25 = 0.04)
+
+    offScreenCanvas.width = image.width * scale;
+    offScreenCanvas.height = image.height * scale;
+
+    offScreenCtx.drawImage(image, 0, 0, offScreenCanvas.width, offScreenCanvas.height);
+
+    const pattern = ctx.createPattern(offScreenCanvas, 'repeat'); // Create a repeatable pattern
+    ctx.fillStyle = pattern;
+    ctx.save();
+    ctx.translate(0, backgroundY); // Translate the canvas to create the scrolling effect
+    ctx.fillRect(0, -canvas.height, canvas.width, canvas.height * 2); // Fill the canvas with the pattern
+    ctx.restore();
+
+    backgroundY += 2; // Move the background downward at the same speed as the enemies
+    if (backgroundY >= canvas.height) {
+        backgroundY = 0; // Reset the background position when it moves off the screen
+    }
+}
+
 function checkCollision(rect1, rect2) {
     return (
         rect1.x < rect2.x + rect2.width &&
@@ -155,6 +183,7 @@ function startGame() {
 function update() {
     if (!gameOver && !gamePaused) {
         clear();
+        drawBackground(gameBackgroundImage); // Draw the game background
         handleInput();
         player.update();
         enemies.forEach(enemy => {
