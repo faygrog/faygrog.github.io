@@ -16,6 +16,11 @@ startButton.style.left = '50%';
 startButton.style.transform = 'translate(-50%, -50%)';
 document.body.appendChild(startButton);
 
+const keys = {
+    left: false,
+    right: false
+};
+
 startButton.addEventListener('click', () => {
     backgroundMusic.play();
     update(); // Start the game loop
@@ -73,26 +78,34 @@ function clear() {
 
 function update() {
     clear();
+    handleInput();
     player.update();
     requestAnimationFrame(update);
 }
 
+function handleInput() {
+    if (keys.left) {
+        player.moveLeft();
+    } else if (keys.right) {
+        player.moveRight();
+    } else {
+        player.stop();
+    }
+}
+
 function keyDown(e) {
     if (e.key === 'ArrowRight' || e.key === 'Right') {
-        player.moveRight();
+        keys.right = true;
     } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
-        player.moveLeft();
+        keys.left = true;
     }
 }
 
 function keyUp(e) {
-    if (
-        e.key === 'ArrowRight' ||
-        e.key === 'Right' ||
-        e.key === 'ArrowLeft' ||
-        e.key === 'Left'
-    ) {
-        player.stop();
+    if (e.key === 'ArrowRight' || e.key === 'Right') {
+        keys.right = false;
+    } else if (e.key === 'ArrowLeft' || e.key === 'Left') {
+        keys.left = false;
     }
 }
 
