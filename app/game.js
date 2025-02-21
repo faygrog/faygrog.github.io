@@ -1,10 +1,11 @@
+// Setup canvas and context
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.style.backgroundColor = 'black';
 
+// Load assets
 const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3');
 backgroundMusic.loop = true;
 
@@ -12,14 +13,21 @@ const welcomeBackgroundImage = new Image();
 welcomeBackgroundImage.src = 'assets/images/rainbow frog background for 2D web shooting game.png';
 
 const gameBackgroundImage = new Image();
-gameBackgroundImage.src = 'assets/images/2111.w032.n003.211B.p1.211.jpg'; // Update the background image source
+gameBackgroundImage.src = 'assets/images/2111.w032.n003.211B.p1.211.jpg';
 
-welcomeBackgroundImage.onload = function () {
-    const imageX = (canvas.width - welcomeBackgroundImage.width) / 2;
-    const imageY = (canvas.height - welcomeBackgroundImage.height) / 2 - 50;
-    ctx.drawImage(welcomeBackgroundImage, imageX, imageY);
-};
+const playerImage = new Image();
+playerImage.src = 'assets/images/for_loyal_guest.png';
 
+// Game state variables
+let gameStarted = false;
+let gameOver = false;
+let gamePaused = false;
+let backgroundY = 0;
+let backgroundPatternCanvas;
+const keys = { left: false, right: false };
+const enemies = [];
+
+// Setup UI elements
 const startButton = document.createElement('button');
 startButton.innerText = 'Press Enter to Start';
 document.body.appendChild(startButton);
@@ -38,15 +46,7 @@ endGameScreen.addEventListener('click', () => {
     document.location.reload();
 });
 
-const keys = {
-    left: false,
-    right: false
-};
-
-let gameStarted = false;
-let gameOver = false;
-let gamePaused = false;
-
+// Player class
 class Player {
     constructor() {
         this.width = 50;
@@ -55,12 +55,10 @@ class Player {
         this.y = canvas.height - this.height - 10;
         this.speed = 5;
         this.dx = 0;
-        this.image = new Image();
-        this.image.src = 'assets/images/for_loyal_guest.png'; // Update the player image source
     }
 
     draw() {
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height); // Draw the player image
+        ctx.drawImage(playerImage, this.x, this.y, this.width, this.height);
     }
 
     update() {
@@ -70,12 +68,8 @@ class Player {
     }
 
     checkBounds() {
-        if (this.x < 0) {
-            this.x = 0;
-        }
-        if (this.x + this.width > canvas.width) {
-            this.x = canvas.width - this.width;
-        }
+        if (this.x < 0) this.x = 0;
+        if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
     }
 
     moveLeft() {
@@ -91,6 +85,7 @@ class Player {
     }
 }
 
+// Enemy class
 class Enemy {
     constructor() {
         this.width = 50;
@@ -112,20 +107,13 @@ class Enemy {
 }
 
 const player = new Player();
-const enemies = [];
 
-function clear() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
-
-let backgroundY = 0; // Add a variable to track the background's vertical position
-let backgroundPatternCanvas; // Add a variable to store the background pattern canvas
-
+// Setup background
 gameBackgroundImage.onload = function () {
     const offScreenCanvas = document.createElement('canvas');
     const offScreenCtx = offScreenCanvas.getContext('2d');
-    const scale = 0.08; // Adjust the scale to zoom out the background by an additional 5x (1/25 = 0.04)
-    const textureWidth = gameBackgroundImage.width / 3; // Calculate the width of one texture
+    const scale = 0.08;
+    const textureWidth = gameBackgroundImage.width / 3;
 
     offScreenCanvas.width = textureWidth * scale;
     offScreenCanvas.height = gameBackgroundImage.height * scale;
@@ -141,15 +129,25 @@ gameBackgroundImage.onload = function () {
 };
 
 function drawBackground() {
-    if (!backgroundPatternCanvas) return; // Ensure the pattern is ready before drawing
+    if (!backgroundPatternCanvas) return;
 
     ctx.drawImage(backgroundPatternCanvas, 0, backgroundY - canvas.height);
     ctx.drawImage(backgroundPatternCanvas, 0, backgroundY);
 
-    backgroundY += 2; // Move the background downward at the same speed as the enemies
+    backgroundY += 2;
     if (backgroundY >= canvas.height) {
-        backgroundY = 0; // Reset the background position when it moves off the screen
+        backgroundY = 0;
     }
+}
+
+function drawWelcomeBackground() {
+    const imageX = (canvas.width - welcomeBackgroundImage.width) / 2;
+    const imageY = (canvas.height - welcomeBackgroundImage.height) / 2 - 50;
+    ctx.drawImage(welcomeBackgroundImage, imageX, imageY);
+}
+
+function clear() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
 function checkCollision(rect1, rect2) {
@@ -170,7 +168,7 @@ function endGame() {
 }
 
 function togglePause() {
-    if (gameOver) return; // Prevent pausing or resuming if the game is over
+    if (gameOver) return;
     gamePaused = !gamePaused;
     if (gamePaused) {
         backgroundMusic.pause();
@@ -199,7 +197,7 @@ function startGame() {
 function update() {
     if (!gameOver && !gamePaused) {
         clear();
-        drawBackground(); // Draw the game background
+        drawBackground();
         handleInput();
         player.update();
         enemies.forEach(enemy => {
@@ -258,3 +256,6 @@ document.addEventListener('keydown', keyDown);
 document.addEventListener('keyup', keyUp);
 window.addEventListener('blur', autoPause);
 setInterval(spawnEnemy, 2000);
+
+// Draw the welcome background image when the page loads
+welcomeBackgroundImage.onload = drawWelcomeBackground;
