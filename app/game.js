@@ -185,8 +185,10 @@ function handleInput() {
 }
 
 function spawnEnemy() {
-    const enemy = new Enemy();
-    enemies.push(enemy);
+    if (!gamePaused) {
+        const enemy = new Enemy();
+        enemies.push(enemy);
+    }
 }
 
 setInterval(spawnEnemy, 2000); // Spawn an enemy every 2 seconds
