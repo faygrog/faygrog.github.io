@@ -52,11 +52,12 @@ class Player {
         this.y = canvas.height - this.height - 10;
         this.speed = 5;
         this.dx = 0;
+        this.image = new Image();
+        this.image.src = 'assets/images/for_loyal_human.png'; // Set the player image source
     }
 
     draw() {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height); // Draw the player image
     }
 
     update() {
