@@ -27,6 +27,8 @@ startButton.addEventListener('click', () => {
     startButton.style.display = 'none'; // Hide the start button
 });
 
+let gameOver = false;
+
 class Player {
     constructor() {
         this.width = 50;
@@ -97,12 +99,37 @@ function clear() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function checkCollision(rect1, rect2) {
+    return (
+        rect1.x < rect2.x + rect2.width &&
+        rect1.x + rect1.width > rect2.x &&
+        rect1.y < rect2.y + rect2.height &&
+        rect1.y + rect1.height > rect2.y
+    );
+}
+
+function endGame() {
+    if (!gameOver) {
+        gameOver = true;
+        backgroundMusic.pause();
+        alert('Game Over!');
+        document.location.reload();
+    }
+}
+
 function update() {
-    clear();
-    handleInput();
-    player.update();
-    enemies.forEach(enemy => enemy.update());
-    requestAnimationFrame(update);
+    if (!gameOver) {
+        clear();
+        handleInput();
+        player.update();
+        enemies.forEach(enemy => {
+            enemy.update();
+            if (checkCollision(player, enemy)) {
+                endGame();
+            }
+        });
+        requestAnimationFrame(update);
+    }
 }
 
 function handleInput() {
