@@ -13,7 +13,8 @@ const resources = {
     backgroundMusic: 'app/assets/musics/gardens-stylish-chill-303261.mp3',
     welcomeBackgroundImage: 'app/assets/images/rainbow frog background for 2D web shooting game.png',
     gameBackgroundImage: 'app/assets/images/2111.w032.n003.211B.p1.211.jpg',
-    playerImage: 'app/assets/images/for_loyal_guest.png'
+    playerImage: 'app/assets/images/for_loyal_guest.png',
+    enemyImage: 'app/assets/images/cartoon_garter_snake_entity_with_transparent_background_and_white_background_for_web_game-removebg-preview.png'
 };
 
 // Add cacheBust to resource URLs
@@ -36,6 +37,9 @@ gameBackgroundImage.src = resources.gameBackgroundImage;
 
 const playerImage = new Image();
 playerImage.src = resources.playerImage;
+
+const enemyImage = new Image();
+enemyImage.src = resources.enemyImage;
 
 // Game state variables
 let gameStarted = false;
@@ -137,8 +141,7 @@ class Enemy {
     }
 
     draw() {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        ctx.drawImage(enemyImage, this.x, this.y, this.width, this.height);
     }
 
     update() {
@@ -297,7 +300,7 @@ setInterval(spawnEnemy, 2000);
 const loadingScreen = document.getElementById('loadingScreen');
 const progressBar = document.getElementById('progressBar');
 let resourcesLoaded = 0;
-const totalResources = 4;
+const totalResources = 5;
 
 function updateProgressBar() {
     const progress = (resourcesLoaded / totalResources) * 100;
@@ -319,3 +322,4 @@ backgroundMusic.addEventListener('canplaythrough', resourceLoaded, false);
 welcomeBackgroundImage.onload = resourceLoaded;
 gameBackgroundImage.onload = resourceLoaded;
 playerImage.onload = resourceLoaded;
+enemyImage.onload = resourceLoaded;
