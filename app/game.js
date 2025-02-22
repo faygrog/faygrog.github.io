@@ -72,6 +72,47 @@ endGameScreen.className = 'end-game-screen';
 endGameScreen.innerText = 'Game Over! Click to Restart';
 document.body.appendChild(endGameScreen);
 
+const fullScreenButton = document.getElementById('fullScreenButton');
+fullScreenButton.addEventListener('click', toggleFullScreen);
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+            resizeCanvas();
+            redrawCurrentScreen();
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen().then(() => {
+                resizeCanvas();
+                redrawCurrentScreen();
+            });
+        }
+    }
+}
+
+function resizeCanvas() {
+    const size = Math.min(window.innerWidth, window.innerHeight);
+    canvas.width = size;
+    canvas.height = size;
+}
+
+function redrawCurrentScreen() {
+    clear();
+    if (!gameStarted) {
+        drawWelcomeBackground();
+    } else if (gameOver) {
+        drawBackground();
+        player.draw();
+        enemies.forEach(enemy => enemy.draw());
+        endGameScreen.style.display = 'block';
+    } else {
+        drawBackground();
+        player.draw();
+        enemies.forEach(enemy => enemy.draw());
+    }
+}
+
 function setupEventListeners() {
     endGameScreen.addEventListener('click', () => {
         document.location.reload();
@@ -342,3 +383,8 @@ gameBackgroundImage.onload = resourceLoaded;
 playerImage.onload = resourceLoaded;
 enemyImage.onload = resourceLoaded;
 deadPlayerImage.onload = resourceLoaded;
+
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    redrawCurrentScreen();
+});

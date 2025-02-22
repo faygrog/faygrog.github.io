@@ -67,6 +67,19 @@ button,
     cursor: pointer;
 }
 
+#fullScreenButton {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 .pause-screen,
 .end-game-screen {
     display: none;
