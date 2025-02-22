@@ -5,18 +5,31 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.style.backgroundColor = 'black';
 
+// Resource URLs
+const resources = {
+    backgroundMusic: 'app/assets/musics/gardens-stylish-chill-303261.mp3',
+    welcomeBackgroundImage: 'app/assets/images/rainbow frog background for 2D web shooting game.png',
+    gameBackgroundImage: 'app/assets/images/2111.w032.n003.211B.p1.211.jpg',
+    playerImage: 'app/assets/images/for_loyal_guest.png'
+};
+
+// Add cacheBust to resource URLs
+Object.keys(resources).forEach(key => {
+    resources[key] += `?v=${cacheBust}`;
+});
+
 // Load assets
-const backgroundMusic = new Audio('app/assets/musics/gardens-stylish-chill-303261.mp3');
+const backgroundMusic = new Audio(resources.backgroundMusic);
 backgroundMusic.loop = true;
 
 const welcomeBackgroundImage = new Image();
-welcomeBackgroundImage.src = 'app/assets/images/rainbow frog background for 2D web shooting game.png';
+welcomeBackgroundImage.src = resources.welcomeBackgroundImage;
 
 const gameBackgroundImage = new Image();
-gameBackgroundImage.src = 'app/assets/images/2111.w032.n003.211B.p1.211.jpg';
+gameBackgroundImage.src = resources.gameBackgroundImage;
 
 const playerImage = new Image();
-playerImage.src = 'app/assets/images/for_loyal_guest.png';
+playerImage.src = resources.playerImage;
 
 // Game state variables
 let gameStarted = false;
