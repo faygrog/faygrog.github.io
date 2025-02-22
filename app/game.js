@@ -197,11 +197,13 @@ function autoPause() {
 }
 
 function startGame() {
-    gameStarted = true;
-    backgroundMusic.play();
-    update();
-    startButton.style.display = 'none';
-    clear();
+    if (!gameStarted) {
+        gameStarted = true;
+        backgroundMusic.play();
+        update();
+        startButton.style.display = 'none';
+        clear();
+    }
 }
 
 function update() {
