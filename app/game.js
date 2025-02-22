@@ -5,6 +5,9 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 canvas.style.backgroundColor = 'black';
 
+// Define cacheBust variable
+const cacheBust = Date.now();
+
 // Resource URLs
 const resources = {
     backgroundMusic: 'app/assets/musics/gardens-stylish-chill-303261.mp3',
@@ -14,8 +17,11 @@ const resources = {
 };
 
 // Add cacheBust to resource URLs
+function cacheBustUrl(url) {
+    return `${url}?v=${cacheBust}`;
+}
 Object.keys(resources).forEach(key => {
-    resources[key] += `?v=${cacheBust}`;
+    resources[key] = cacheBustUrl(resources[key]);
 });
 
 // Load assets
@@ -58,11 +64,28 @@ endGameScreen.className = 'end-game-screen';
 endGameScreen.innerText = 'Game Over! Click to Restart';
 document.body.appendChild(endGameScreen);
 
-endGameScreen.addEventListener('click', () => {
-    document.location.reload();
-});
+function setupEventListeners() {
+    endGameScreen.addEventListener('click', () => {
+        document.location.reload();
+    });
 
-pauseButton.addEventListener('click', togglePause);
+    pauseButton.addEventListener('click', togglePause);
+
+    startButton.addEventListener('click', startGame);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            startGame();
+        }
+        if (e.key === 'Escape') {
+            togglePause();
+        }
+    });
+    document.addEventListener('keydown', keyDown);
+    document.addEventListener('keyup', keyUp);
+    window.addEventListener('blur', autoPause);
+}
+
+setupEventListeners();
 
 // Player class
 class Player {
@@ -267,17 +290,6 @@ function keyUp(e) {
     }
 }
 
-startButton.addEventListener('click', startGame);
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-        startGame();
-    }
-    if (e.key === 'Escape') {
-        togglePause();
-    }
-});
-document.addEventListener('keydown', keyDown);
-document.addEventListener('keyup', keyUp);
 window.addEventListener('blur', autoPause);
 setInterval(spawnEnemy, 2000);
 

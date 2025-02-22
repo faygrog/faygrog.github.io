@@ -9,9 +9,11 @@
     <meta http-equiv="Expires" content="0">
     <title>FayGrog</title>
     <script>
-        window.cacheBust = Date.now();
-        document.write(`<link rel="stylesheet" href="app/styles.css?v=${cacheBust}">`);
-        document.write(`<link rel="icon" href="app/favicon.png?v=${cacheBust}" type="image/png">`);
+        function cacheBustUrl(url) {
+            return `${url}?v=${Date.now()}`;
+        }
+        document.write(`<link rel="stylesheet" href="${cacheBustUrl('app/styles.css')}">`);
+        document.write(`<link rel="icon" href="${cacheBustUrl('app/favicon.png')}" type="image/png">`);
     </script>
 </head>
 
@@ -25,7 +27,7 @@
     <canvas id="gameCanvas"></canvas>
     <button id="startButton" style="display: none;">Press Enter to Start</button>
     <script>
-        document.write(`<script src="app/game.js?v=${cacheBust}"><\/script>`);
+        document.write(`<script src="${cacheBustUrl('app/game.js')}"><\/script>`);
     </script>
 </body>
 
