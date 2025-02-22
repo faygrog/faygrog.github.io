@@ -13,8 +13,9 @@ const resources = {
     backgroundMusic: 'app/assets/musics/gardens-stylish-chill-303261.mp3',
     welcomeBackgroundImage: 'app/assets/images/rainbow frog background for 2D web shooting game.png',
     gameBackgroundImage: 'app/assets/images/2111.w032.n003.211B.p1.211.jpg',
-    playerImage: 'app/assets/images/for_loyal_guest.png',
-    enemyImage: 'app/assets/images/cartoon_garter_snake_entity_with_transparent_background_and_white_background_for_web_game-removebg-preview.png'
+    playerImage: 'app/assets/images/a_simple_and_cute_cartoon_frog_with_large_white_eyeballs_on_a_white_background-removebg-preview.png',
+    enemyImage: 'app/assets/images/cartoon_garter_snake_entity_with_transparent_background_and_white_background_for_web_game-removebg-preview.png',
+    deadPlayerImage: 'app/assets/images/A_frog_looking_dead__passed_out__with_a_white_background__in_a_simple_art_style-removebg-preview.png'
 };
 
 // Add cacheBust to resource URLs
@@ -40,6 +41,9 @@ playerImage.src = resources.playerImage;
 
 const enemyImage = new Image();
 enemyImage.src = resources.enemyImage;
+
+const deadPlayerImage = new Image();
+deadPlayerImage.src = resources.deadPlayerImage;
 
 // Game state variables
 let gameStarted = false;
@@ -100,10 +104,15 @@ class Player {
         this.y = canvas.height - this.height - 10;
         this.speed = 5;
         this.dx = 0;
+        this.isDead = false; // Add a flag to check if the player is dead
     }
 
     draw() {
-        ctx.drawImage(playerImage, this.x, this.y, this.width, this.height);
+        if (this.isDead) {
+            ctx.drawImage(deadPlayerImage, this.x, this.y, this.width, this.height);
+        } else {
+            ctx.drawImage(playerImage, this.x, this.y, this.width, this.height);
+        }
     }
 
     update() {
@@ -207,6 +216,15 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
         backgroundMusic.pause();
+        player.isDead = true; // Set the player to dead
+
+        // Clear the canvas and redraw everything with the dead frog
+        clear();
+        drawBackground();
+        player.draw();
+        enemies.forEach(enemy => enemy.draw());
+
+        // Display the game over screen
         endGameScreen.style.display = 'block';
         pauseButton.style.display = 'none';
     }
@@ -323,3 +341,4 @@ welcomeBackgroundImage.onload = resourceLoaded;
 gameBackgroundImage.onload = resourceLoaded;
 playerImage.onload = resourceLoaded;
 enemyImage.onload = resourceLoaded;
+deadPlayerImage.onload = resourceLoaded;
