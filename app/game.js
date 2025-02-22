@@ -42,6 +42,12 @@ const enemies = [];
 
 // Setup UI elements
 const startButton = document.getElementById('startButton');
+const pauseButton = document.createElement('button');
+pauseButton.id = 'pauseButton';
+pauseButton.innerText = 'Pause';
+pauseButton.style.display = 'none';
+document.body.appendChild(pauseButton);
+
 const pauseScreen = document.createElement('div');
 pauseScreen.className = 'pause-screen';
 pauseScreen.innerText = 'Paused';
@@ -55,6 +61,8 @@ document.body.appendChild(endGameScreen);
 endGameScreen.addEventListener('click', () => {
     document.location.reload();
 });
+
+pauseButton.addEventListener('click', togglePause);
 
 // Player class
 class Player {
@@ -174,6 +182,7 @@ function endGame() {
         gameOver = true;
         backgroundMusic.pause();
         endGameScreen.style.display = 'block';
+        pauseButton.style.display = 'none';
     }
 }
 
@@ -182,9 +191,11 @@ function togglePause() {
     gamePaused = !gamePaused;
     if (gamePaused) {
         backgroundMusic.pause();
+        pauseButton.innerText = 'Resume';
         pauseScreen.style.display = 'block';
     } else {
         backgroundMusic.play();
+        pauseButton.innerText = 'Pause';
         pauseScreen.style.display = 'none';
         update();
     }
@@ -202,6 +213,7 @@ function startGame() {
         backgroundMusic.play();
         update();
         startButton.style.display = 'none';
+        pauseButton.style.display = 'block';
         clear();
     }
 }
