@@ -28,10 +28,7 @@ const keys = { left: false, right: false };
 const enemies = [];
 
 // Setup UI elements
-const startButton = document.createElement('button');
-startButton.innerText = 'Press Enter to Start';
-document.body.appendChild(startButton);
-
+const startButton = document.getElementById('startButton');
 const pauseScreen = document.createElement('div');
 pauseScreen.className = 'pause-screen';
 pauseScreen.innerText = 'Paused';
@@ -275,6 +272,7 @@ function resourceLoaded() {
         loadingScreen.style.display = 'none';
         drawWelcomeBackground();
         createBackgroundPattern();
+        startButton.style.display = 'block'; // Show the start button after resources are loaded
     }
 }
 
