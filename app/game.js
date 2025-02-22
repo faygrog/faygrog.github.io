@@ -6,17 +6,17 @@ canvas.height = window.innerHeight;
 canvas.style.backgroundColor = 'black';
 
 // Load assets
-const backgroundMusic = new Audio('assets/musics/gardens-stylish-chill-303261.mp3');
+const backgroundMusic = new Audio('app/assets/musics/gardens-stylish-chill-303261.mp3');
 backgroundMusic.loop = true;
 
 const welcomeBackgroundImage = new Image();
-welcomeBackgroundImage.src = 'assets/images/rainbow frog background for 2D web shooting game.png';
+welcomeBackgroundImage.src = 'app/assets/images/rainbow frog background for 2D web shooting game.png';
 
 const gameBackgroundImage = new Image();
-gameBackgroundImage.src = 'assets/images/2111.w032.n003.211B.p1.211.jpg';
+gameBackgroundImage.src = 'app/assets/images/2111.w032.n003.211B.p1.211.jpg';
 
 const playerImage = new Image();
-playerImage.src = 'assets/images/for_loyal_guest.png';
+playerImage.src = 'app/assets/images/for_loyal_guest.png';
 
 // Game state variables
 let gameStarted = false;
@@ -109,7 +109,7 @@ class Enemy {
 const player = new Player();
 
 // Setup background
-gameBackgroundImage.onload = function () {
+function createBackgroundPattern() {
     const offScreenCanvas = document.createElement('canvas');
     const offScreenCtx = offScreenCanvas.getContext('2d');
     const scale = 0.08;
@@ -126,7 +126,7 @@ gameBackgroundImage.onload = function () {
     const patternCtx = backgroundPatternCanvas.getContext('2d');
     patternCtx.fillStyle = patternCtx.createPattern(offScreenCanvas, 'repeat');
     patternCtx.fillRect(0, 0, backgroundPatternCanvas.width, backgroundPatternCanvas.height);
-};
+}
 
 function drawBackground() {
     if (!backgroundPatternCanvas) return;
@@ -155,7 +155,7 @@ function checkCollision(rect1, rect2) {
         rect1.x < rect2.x + rect2.width &&
         rect1.x + rect1.width > rect2.x &&
         rect1.y < rect2.y + rect2.height &&
-        rect1.y + rect1.height > rect2.y
+        rect1.y + rect2.height > rect2.y
     );
 }
 
@@ -257,5 +257,28 @@ document.addEventListener('keyup', keyUp);
 window.addEventListener('blur', autoPause);
 setInterval(spawnEnemy, 2000);
 
-// Draw the welcome background image when the page loads
-welcomeBackgroundImage.onload = drawWelcomeBackground;
+// Preload resources and hide the loading screen when done
+const loadingScreen = document.getElementById('loadingScreen');
+const progressBar = document.getElementById('progressBar');
+let resourcesLoaded = 0;
+const totalResources = 4;
+
+function updateProgressBar() {
+    const progress = (resourcesLoaded / totalResources) * 100;
+    progressBar.style.width = `${progress}%`;
+}
+
+function resourceLoaded() {
+    resourcesLoaded++;
+    updateProgressBar();
+    if (resourcesLoaded === totalResources) {
+        loadingScreen.style.display = 'none';
+        drawWelcomeBackground();
+        createBackgroundPattern();
+    }
+}
+
+backgroundMusic.addEventListener('canplaythrough', resourceLoaded, false);
+welcomeBackgroundImage.onload = resourceLoaded;
+gameBackgroundImage.onload = resourceLoaded;
+playerImage.onload = resourceLoaded;

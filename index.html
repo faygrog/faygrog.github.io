@@ -4,12 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Shooter Game</title>
+    <title>FayGrog</title>
     <link rel="stylesheet" href="app/styles.css">
     <link rel="icon" href="app/favicon.png" type="image/png">
 </head>
 
 <body>
+    <div id="loadingScreen">
+        <div id="loadingText">Loading...</div>
+        <div id="progressBarContainer">
+            <div id="progressBar"></div>
+        </div>
+    </div>
     <canvas id="gameCanvas"></canvas>
     <script src="app/game.js"></script>
 </body>
