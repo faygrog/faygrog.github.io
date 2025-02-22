@@ -132,7 +132,7 @@ class Enemy {
         this.width = 50;
         this.height = 50;
         this.x = Math.random() * (canvas.width - this.width);
-        this.y = 0;
+        this.y = -this.height; // Spawn off-screen
         this.speed = 2;
     }
 
